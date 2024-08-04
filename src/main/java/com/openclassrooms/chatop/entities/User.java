@@ -23,15 +23,15 @@ public class User {
     private Integer id;
 
     @Size(max = 255)
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Size(max = 255)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Size(max = 255)
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "created_at")

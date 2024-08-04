@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -24,21 +25,21 @@ public class Rental {
     private Integer id;
 
     @Size(max = 255)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "surface", precision = 10)
-    private BigDecimal surface;
+    @Column(name = "surface", precision = 10, nullable = false)
+    private Integer surface;
 
-    @Column(name = "price", precision = 10)
-    private BigDecimal price;
+    @Column(name = "price", precision = 10, nullable = false)
+    private Integer price;
 
     @Size(max = 255)
-    @Column(name = "picture")
+    @Column(name = "picture", nullable = false)
     private String picture;
 
     @Size(max = 2000)
-    @Column(name = "description", length = 2000)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
@@ -47,9 +48,8 @@ public class Rental {
     private User owner;
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
-
+    private LocalDate updatedAt;
 }
