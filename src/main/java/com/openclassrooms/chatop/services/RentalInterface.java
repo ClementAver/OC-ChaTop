@@ -10,6 +10,6 @@ import java.util.stream.Stream;
 public interface RentalInterface {
     Stream<RentalResponse> getRentals();
     RentalResponse getRental(Integer id) throws NotFoundException;
-    RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException;
+    RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException;
     RentalResponse updateRental(Integer id, RentalRequest rentalRequest) throws NotFoundException;
 }

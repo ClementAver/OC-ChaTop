@@ -29,16 +29,20 @@ public class RentalService implements RentalInterface{
     }
 
     @Override
-    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException {
+    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException {
         Optional<Rental> rentalInDB = rentalRepository.findByName(rentalRequest.getName());
         if (rentalInDB.isPresent()) {
-            throw new AlreadyExistException("Cet email a déjà été renseigné.");
+            throw new AlreadyExistException("Ce nom n'est plus disponible.");
         }
 
         Rental rental = new Rental();
 
         Optional<User> userInDB = userRepository.findById(rentalRequest.getOwner_id());
-        userInDB.ifPresent(rental::setOwner);
+        if (userInDB.isPresent()) {
+            rental.setOwner(userInDB.get());
+        } else {
+            throw new NotFoundException("Utilisateur non référencé.");
+        }
 
         rental.setName(rentalRequest.getName());
         rental.setSurface(rentalRequest.getSurface());

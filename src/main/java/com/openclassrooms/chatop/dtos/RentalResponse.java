@@ -1,6 +1,5 @@
 package com.openclassrooms.chatop.dtos;
 
-import com.openclassrooms.chatop.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,6 @@ package com.openclassrooms.chatop.controllers;
 
 import com.openclassrooms.chatop.dtos.RentalRequest;
 import com.openclassrooms.chatop.dtos.RentalResponse;
-import com.openclassrooms.chatop.dtos.UserResponse;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.services.RentalService;
@@ -28,7 +27,7 @@ public class RentalController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/rentals", consumes = APPLICATION_JSON_VALUE)
-    public RentalResponse createRental(@Valid @RequestBody RentalRequest rentalRequest) throws AlreadyExistException {
+    public RentalResponse createRental(@Valid @RequestBody RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException {
         return rentalService.createRental(rentalRequest);
     }
 
