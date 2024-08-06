@@ -32,7 +32,8 @@ public class MessageService implements MessageInterface {
         Optional<Message> messageInDB = messageRepository.findById(id);
         if(messageInDB.isPresent()) {
             Message message = messageInDB.get();
-            return new MessageResponse(message.getId(), message.getRental().getId(), message.getUser().getId(), message.getMessage(), message.getCreatedAt(), message.getUpdatedAt());        } else {
+            return new MessageResponse(message.getId(), message.getRental().getId(), message.getUser().getId(), message.getMessage(), message.getCreatedAt(), message.getUpdatedAt());
+        } else {
             throw new NotFoundException("Message non référencée.");
         }
     }

@@ -23,7 +23,7 @@ public class MessageController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/messages", consumes = APPLICATION_JSON_VALUE)
-    public MessageResponse createRental(@Valid @RequestBody MessageRequest messageRequest) throws NotFoundException {
+    public MessageResponse createUser(@Valid @RequestBody MessageRequest messageRequest) throws NotFoundException {
         return messageService.createMessage(messageRequest);
     }
 }
