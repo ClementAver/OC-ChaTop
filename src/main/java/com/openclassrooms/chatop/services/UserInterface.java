@@ -8,4 +8,5 @@ import com.openclassrooms.chatop.exceptions.NotFoundException;
 public interface UserInterface {
     UserResponse getUser(Integer id) throws NotFoundException;
     UserResponse createUser(UserRequest userRequest) throws AlreadyExistException;
+    UserResponse getUserByEmail(String email) throws NotFoundException;
 }

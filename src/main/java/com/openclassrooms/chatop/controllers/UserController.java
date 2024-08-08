@@ -24,11 +24,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value = "/user", consumes = APPLICATION_JSON_VALUE)
-    public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) throws AlreadyExistException {
-        return userService.createUser(userRequest);
-    }
+//    // Replaced by the "api/auth/register" route.
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    @PostMapping(value = "/user", consumes = APPLICATION_JSON_VALUE)
+//    public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) throws AlreadyExistException {
+//        return userService.createUser(userRequest);
+//    }
 
     @GetMapping("/user/{id}")
     public UserResponse getUser(@PathVariable @Min(value = 1, message = "L'identifiant doit être égal ou supérieur à un (1).") int id) throws NotFoundException {
