@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -27,7 +28,7 @@ public class RentalController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/rentals", consumes = APPLICATION_JSON_VALUE)
-    public RentalResponse createRental(@Valid @RequestBody RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException {
+    public RentalResponse createRental(@Valid @RequestBody RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException {
         return rentalService.createRental(rentalRequest);
     }
 

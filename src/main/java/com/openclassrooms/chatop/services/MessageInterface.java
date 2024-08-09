@@ -6,6 +6,5 @@ import com.openclassrooms.chatop.exceptions.AlreadyExistException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 
 public interface MessageInterface {
-    MessageResponse getMessage(Integer id) throws NotFoundException;
     MessageResponse createMessage(MessageRequest messageRequest) throws AlreadyExistException, NotFoundException;
 }

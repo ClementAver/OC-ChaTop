@@ -28,17 +28,6 @@ public class MessageService implements MessageInterface {
     }
 
     @Override
-    public MessageResponse getMessage(Integer id) throws NotFoundException {
-        Optional<Message> messageInDB = messageRepository.findById(id);
-        if(messageInDB.isPresent()) {
-            Message message = messageInDB.get();
-            return new MessageResponse(message.getId(), message.getRental().getId(), message.getUser().getId(), message.getMessage(), message.getCreatedAt(), message.getUpdatedAt());
-        } else {
-            throw new NotFoundException("Message non référencée.");
-        }
-    }
-
-    @Override
     public MessageResponse createMessage(MessageRequest messageRequest) throws NotFoundException {
         Message message = new Message();
 

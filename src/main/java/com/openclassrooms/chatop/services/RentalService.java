@@ -9,11 +9,15 @@ import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.mappers.RentalDTOMapper;
 import com.openclassrooms.chatop.repositories.RentalRepository;
 import com.openclassrooms.chatop.repositories.UserRepository;
+import com.openclassrooms.chatop.utils.PictureHandler;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static com.openclassrooms.chatop.utils.PictureHandler.downloadPicture;
 
 @Service
 public class RentalService implements RentalInterface{
@@ -29,7 +33,7 @@ public class RentalService implements RentalInterface{
     }
 
     @Override
-    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException {
+    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException {
         Optional<Rental> rentalInDB = rentalRepository.findByName(rentalRequest.getName());
         if (rentalInDB.isPresent()) {
             throw new AlreadyExistException("Ce nom n'est plus disponible.");
@@ -47,8 +51,11 @@ public class RentalService implements RentalInterface{
         rental.setName(rentalRequest.getName());
         rental.setSurface(rentalRequest.getSurface());
         rental.setPrice(rentalRequest.getPrice());
-        rental.setPicture(rentalRequest.getPicture());
         rental.setDescription(rentalRequest.getDescription());
+
+        String pictureURL = downloadPicture(rentalRequest.getPicture());
+        rental.setPicture(pictureURL);
+
 
         rental.setCreatedAt(LocalDate.now());
         rental.setUpdatedAt(LocalDate.now());
