@@ -2,7 +2,6 @@ package com.openclassrooms.chatop.services;
 
 import com.openclassrooms.chatop.entities.Image;
 import com.openclassrooms.chatop.repositories.ImageRepo;
-import com.openclassrooms.chatop.utils.ImageUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-public class ImageService {
+public class ImageService implements ImageInterface{
 
     private final ImageRepo imageRepository;
 
@@ -19,41 +18,29 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-//    @Override
+    @Override
     public String uploadImage(MultipartFile file) throws IOException {
         String imageFileName = file.getOriginalFilename();
 
-        imageRepository.save(Image.builder()
-                .name(imageFileName)
-                .type(file.getContentType())
-                .picByte(ImageUtility.compressImage(file.getBytes()))
-                .build());
-
-        return "Image uploaded successfully: " + imageFileName;
-    }
-
-    public Image getImageDetails(String name) throws FileNotFoundException {
-        Optional<Image> imageInDB = imageRepository.findByName(name);
-        Image image = imageInDB.orElse(null);
-
-        if (image != null) {
-            image = Image.builder()
-                    .name(image.getName())
-                    .type(image.getType())
-                    .picByte(ImageUtility.compressImage(image.getPicByte()))
-                    .build();
-        } else {
-            throw new FileNotFoundException("Image not found");
+        Optional<Image> imageOptional = imageRepository.findByName(imageFileName);
+        if (imageOptional.isEmpty()) {
+            imageRepository.save(Image.builder()
+                    .name(imageFileName)
+                    .type(file.getContentType())
+                    .picByte(file.getBytes())
+                    .build());
         }
-        return image;
+
+        return imageFileName;
     }
 
+    @Override
     public byte[] getImage(String name) throws FileNotFoundException {
         Optional<Image> dbImage = imageRepository.findByName(name);
         byte[] imageBytes;
 
         if (dbImage.isPresent()) {
-            imageBytes = ImageUtility.compressImage(dbImage.get().getPicByte());
+            imageBytes = dbImage.get().getPicByte();
         } else {
             throw new FileNotFoundException("Image non référencé : " + name);
         }

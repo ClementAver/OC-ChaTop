@@ -9,27 +9,34 @@ import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.mappers.RentalDTOMapper;
 import com.openclassrooms.chatop.repositories.RentalRepository;
 import com.openclassrooms.chatop.repositories.UserRepository;
-import com.openclassrooms.chatop.utils.PictureHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-import static com.openclassrooms.chatop.utils.PictureHandler.downloadPicture;
 
+@Slf4j
 @Service
-public class RentalService implements RentalInterface{
+public class RentalService implements RentalInterface {
 
     private final RentalRepository rentalRepository;
     private final RentalDTOMapper rentalDTOMapper;
     private final UserRepository userRepository;
+    private final ImageService imageService;
+    private static final Logger logger = LoggerFactory.getLogger(RentalService.class);
 
-    public RentalService(RentalRepository rentalRepository, RentalDTOMapper rentalDTOMapper, UserRepository userRepository) {
+    public RentalService(RentalRepository rentalRepository, RentalDTOMapper rentalDTOMapper, UserRepository userRepository, ImageService imageService) {
         this.rentalRepository = rentalRepository;
         this.rentalDTOMapper = rentalDTOMapper;
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -41,8 +48,13 @@ public class RentalService implements RentalInterface{
 
         Rental rental = new Rental();
 
-        Optional<User> userInDB = userRepository.findById(rentalRequest.getOwner_id());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        logger.info(currentUser.getId().toString());
+        Optional<User> userInDB = userRepository.findById(currentUser.getId());
+        User user;
         if (userInDB.isPresent()) {
+            logger.info(String.valueOf(userInDB.get()));
             rental.setOwner(userInDB.get());
         } else {
             throw new NotFoundException("Utilisateur non référencé.");
@@ -53,21 +65,22 @@ public class RentalService implements RentalInterface{
         rental.setPrice(rentalRequest.getPrice());
         rental.setDescription(rentalRequest.getDescription());
 
-        String pictureURL = downloadPicture(rentalRequest.getPicture());
+        String imageName = imageService.uploadImage(rentalRequest.getPicture());
+        String pictureURL = "http://localhost:8084/api/get/image/" + imageName;
         rental.setPicture(pictureURL);
-
 
         rental.setCreatedAt(LocalDate.now());
         rental.setUpdatedAt(LocalDate.now());
 
         rentalRepository.save(rental);
+
         return new RentalResponse(rental.getId(), rental.getName(), rental.getSurface(), rental.getPrice(), rental.getPicture(), rental.getDescription(), rental.getOwner().getId(), rental.getCreatedAt(), rental.getUpdatedAt());
     }
 
     @Override
-    public Stream<RentalResponse> getRentals() {
+    public List<RentalResponse> getRentals() {
         return rentalRepository.findAll()
-                .stream().map(rentalDTOMapper);
+                .stream().map(rentalDTOMapper).toList();
     }
 
     @Override
@@ -85,18 +98,9 @@ public class RentalService implements RentalInterface{
     public RentalResponse updateRental(Integer id, RentalRequest rentalRequest) throws NotFoundException {
         Optional<Rental> rentalInDB = rentalRepository.findById(id);
 
-        User user = null;
-        if (rentalRequest.getOwner_id() != null) {
-            Optional<User> userInDB = userRepository.findById(rentalRequest.getOwner_id());
-            if (userInDB.isPresent()) {
-                user = userInDB.get();
-            } else {
-                throw new NotFoundException("Utilisateur non référencé.");
-            }
-        }
-
         if (rentalInDB.isPresent()) {
             Rental rental = rentalInDB.get();
+
             if (rentalRequest.getName() != null) {
                 rental.setName(rentalRequest.getName());
             }
@@ -106,15 +110,10 @@ public class RentalService implements RentalInterface{
             if (rentalRequest.getPrice() != null) {
                 rental.setPrice(rentalRequest.getPrice());
             }
-            if (rentalRequest.getPicture() != null) {
-                rental.setPicture(rentalRequest.getPicture());
-            }
             if (rentalRequest.getDescription() != null) {
                 rental.setDescription(rentalRequest.getDescription());
             }
-            if (user != null) {
-                rental.setOwner(user);
-            }
+
             rental.setUpdatedAt(LocalDate.now());
 
             rentalRepository.save(rental);

@@ -35,6 +35,7 @@ public class ApplicationConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     // Sets the new strategy to perform the authentication.
     @Bean
     AuthenticationProvider authenticationProvider() {

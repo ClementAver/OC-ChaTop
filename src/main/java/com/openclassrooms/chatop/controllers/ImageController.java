@@ -1,8 +1,10 @@
 package com.openclassrooms.chatop.controllers;
 
-import com.openclassrooms.chatop.entities.Image;
-import com.openclassrooms.chatop.repositories.ImageRepo;
 import com.openclassrooms.chatop.services.ImageService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,13 +26,12 @@ public class ImageController {
         return imageService.uploadImage(file);
     }
 
-    @GetMapping(path = {"/get/image/info/{name}"})
-    public Image getImageDetails(@PathVariable("name") String name) throws FileNotFoundException {
-        return imageService.getImageDetails(name);
-    }
-
     @GetMapping(path = {"/get/image/{name}"})
-    public byte[] getImage(@PathVariable("name") String name) throws FileNotFoundException {
-        return imageService.getImage(name);
+    public ResponseEntity<byte[]> getImage(@PathVariable("name") String name) throws FileNotFoundException {
+        byte[] imageData = imageService.getImage(name);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 }

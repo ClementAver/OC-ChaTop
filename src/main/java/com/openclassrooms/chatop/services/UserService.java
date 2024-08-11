@@ -5,13 +5,10 @@ import com.openclassrooms.chatop.dtos.UserResponse;
 import com.openclassrooms.chatop.entities.User;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
-import com.openclassrooms.chatop.mappers.UserDTOMapper;
 import com.openclassrooms.chatop.repositories.UserRepository;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -20,12 +17,9 @@ public class UserService implements UserInterface {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    // private final UserDTOMapper userDTOMapper;
 
-
-    public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        // this.userDTOMapper = userDTOMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,9 +45,9 @@ public class UserService implements UserInterface {
         }
     }
 
-    // Sign-up
+    // Register
     @Override
-    public UserResponse createUser(UserRequest userRequest) throws AlreadyExistException {
+    public void createUser(UserRequest userRequest) throws AlreadyExistException {
         Optional<User> userInDB = userRepository.findByEmail(userRequest.getEmail());
         if (userInDB.isPresent()) {
             throw new AlreadyExistException("Cet email a déjà été renseigné.");
@@ -68,6 +62,6 @@ public class UserService implements UserInterface {
 
         userRepository.save(user);
 
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }

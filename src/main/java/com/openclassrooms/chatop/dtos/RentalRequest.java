@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -22,12 +23,9 @@ public class RentalRequest {
     @Min(value = 1, message = "Le prix doit au moins être d'un euro symbolique.")
     private Integer price;
 
-    @Size(max = 255, message = "L'url de l'image ne doit pas dépasser 255 caractères.")
-    private String picture;
+    @NotNull
+    private MultipartFile picture;
 
     @Size(max = 2000, message = "la description ne doit pas dépasser 2000 caractères.")
     private String description;
-
-    @NotNull(message = "Le propriétaire doit figurer.")
-    private Integer owner_id;
 }

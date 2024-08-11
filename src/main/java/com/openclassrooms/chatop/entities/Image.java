@@ -22,8 +22,4 @@ public class Image {
     @Lob
     @Column(name = "picByte", columnDefinition="mediumblob")
     private byte[] picByte;
-
-    @OneToOne
-    @JoinColumn(name = "users_id", referencedColumnName = "id")
-    private User users_id;
 }

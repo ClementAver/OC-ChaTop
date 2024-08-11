@@ -7,10 +7,8 @@ import com.openclassrooms.chatop.entities.User;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.services.AuthenticationService;
-import com.openclassrooms.chatop.services.JwtService;
 import com.openclassrooms.chatop.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -31,23 +29,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest userRequest) throws AlreadyExistException {
-        UserResponse registeredUser = userService.createUser(userRequest);
-        return ResponseEntity.ok(registeredUser);
+    public LoginResponse register(@Valid @RequestBody UserRequest userRequest) throws AlreadyExistException, NotFoundException {
+        userService.createUser(userRequest);
+        return authenticationService.authenticate(userRequest);
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody UserRequest userRequest) throws NotFoundException {
-        LoginResponse authenticatedUser = authenticationService.authenticate(userRequest);
-        return ResponseEntity.ok(authenticatedUser);
+    public LoginResponse authenticate(@Valid @RequestBody UserRequest userRequest) throws NotFoundException {
+        return authenticationService.authenticate(userRequest);
     }
 
     @GetMapping("/auth/me")
-    public ResponseEntity<Object> authenticatedUser() {
+    public UserResponse authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Object currentUser = authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
+        User user = (User) authentication.getPrincipal();
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 }
