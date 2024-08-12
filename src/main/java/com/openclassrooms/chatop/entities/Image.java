@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "image_table")
+@Table(name = "images")
 @Getter
 @Setter
 @Builder
@@ -20,6 +20,6 @@ public class Image {
     private String type;
 
     @Lob
-    @Column(name = "picByte", columnDefinition="mediumblob")
-    private byte[] picByte;
+    @Column(name = "bytes", columnDefinition="mediumblob")
+    private byte[] bytes;
 }

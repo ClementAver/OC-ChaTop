@@ -23,7 +23,6 @@ public class RentalRequest {
     @Min(value = 1, message = "Le prix doit au moins être d'un euro symbolique.")
     private Integer price;
 
-    @NotNull
     private MultipartFile picture;
 
     @Size(max = 2000, message = "la description ne doit pas dépasser 2000 caractères.")

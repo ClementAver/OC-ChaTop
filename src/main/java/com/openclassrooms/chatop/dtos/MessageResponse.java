@@ -16,6 +16,6 @@ public class MessageResponse {
     private Integer rental;
     private Integer user;
     private String message;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDate created_at;
+    private LocalDate updated_at;
 }

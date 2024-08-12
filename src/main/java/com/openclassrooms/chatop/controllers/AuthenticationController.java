@@ -5,6 +5,7 @@ import com.openclassrooms.chatop.dtos.UserRequest;
 import com.openclassrooms.chatop.dtos.UserResponse;
 import com.openclassrooms.chatop.entities.User;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
+import com.openclassrooms.chatop.exceptions.NoUserInContextException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.services.AuthenticationService;
 import com.openclassrooms.chatop.services.UserService;
@@ -40,9 +41,14 @@ public class AuthenticationController {
     }
 
     @GetMapping("/auth/me")
-    public UserResponse authenticatedUser() {
+    public UserResponse authenticatedUser() throws NoUserInContextException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+
+        try {
+            User user = (User) authentication.getPrincipal();
+            return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        } catch (Exception e) {
+            throw new NoUserInContextException("Aucun utilisateur authentifié.");
+        }
     }
 }

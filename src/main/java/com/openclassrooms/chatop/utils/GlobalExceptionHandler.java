@@ -1,6 +1,7 @@
 package com.openclassrooms.chatop.utils;
 
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
+import com.openclassrooms.chatop.exceptions.FormatNotSupportedException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
@@ -71,6 +72,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IOException.class)
     public ResponseEntity<String> handleIOException(IOException ex) {
         return new ResponseEntity<>("Problème lors du traitement de la ressource", new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(FormatNotSupportedException.class)
+    public ResponseEntity<String> handleIOException(FormatNotSupportedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 

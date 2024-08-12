@@ -1,7 +1,7 @@
 package com.openclassrooms.chatop.services;
 
 import com.openclassrooms.chatop.entities.Image;
-import com.openclassrooms.chatop.repositories.ImageRepo;
+import com.openclassrooms.chatop.repositories.ImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,9 +12,9 @@ import java.util.Optional;
 @Service
 public class ImageService implements ImageInterface{
 
-    private final ImageRepo imageRepository;
+    private final ImageRepository imageRepository;
 
-    public ImageService(ImageRepo imageRepository) {
+    public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
 
@@ -27,7 +27,7 @@ public class ImageService implements ImageInterface{
             imageRepository.save(Image.builder()
                     .name(imageFileName)
                     .type(file.getContentType())
-                    .picByte(file.getBytes())
+                    .bytes(file.getBytes())
                     .build());
         }
 
@@ -40,7 +40,7 @@ public class ImageService implements ImageInterface{
         byte[] imageBytes;
 
         if (dbImage.isPresent()) {
-            imageBytes = dbImage.get().getPicByte();
+            imageBytes = dbImage.get().getBytes();
         } else {
             throw new FileNotFoundException("Image non référencé : " + name);
         }
