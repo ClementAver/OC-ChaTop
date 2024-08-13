@@ -66,7 +66,7 @@ public class RentalService implements RentalInterface {
         rental.setDescription(rentalRequest.getDescription());
 
         String imageName = imageService.uploadImage(rentalRequest.getPicture());
-        String pictureURL = "http://localhost:8084/api/get/image/" + imageName;
+        String pictureURL = "http://localhost:3001/api/get/image/" + imageName;
         rental.setPicture(pictureURL);
 
         rental.setCreatedAt(LocalDate.now());
