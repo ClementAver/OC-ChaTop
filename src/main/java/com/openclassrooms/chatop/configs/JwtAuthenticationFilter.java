@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
+// OncePerRequestFilter -> run on every request.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
@@ -39,32 +40,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
+        // Look for a bearer token
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // Passes through our filter
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
+            // Retrieves the JWT.
             final String jwt = authHeader.substring(7);
+            // Retrieves the right username from the token.
             final String userEmail = jwtService.extractUsername(jwt);
 
+            // Retrieves the current authentication.
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+            // If username valid and not already authenticated :
             if (userEmail != null && authentication == null) {
+                // Gets user details.
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    // Creates the authentication token with the user details.
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
+                            userDetails, // User details.
+                            null, // Credentials (not needed anymore).
+                            userDetails.getAuthorities() // User roles (no roles in this context).
                     );
 
+                    // Adds other informations like the IP address or session ID (not used here in favour of JWT) to the token.
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    // Sets the security context.
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
 
+            // Allow the request.
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);

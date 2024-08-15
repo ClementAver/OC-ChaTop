@@ -28,7 +28,7 @@ public class ImageController {
     }
 
     @PostMapping("/upload/image")
-    public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+    public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException, FormatNotSupportedException {
         return imageService.uploadImage(file);
     }
 
@@ -43,7 +43,7 @@ public class ImageController {
         } else if (extension.equals("png")) {
             headers.setContentType(MediaType.IMAGE_PNG);
         } else {
-            throw new FormatNotSupportedException("Image not found");
+            throw new FormatNotSupportedException("Format invalide (doit être : \".jpeg\", \".jpg\" ou \".png\".");
         }
 
         byte[] imageData = imageService.getImage(name);

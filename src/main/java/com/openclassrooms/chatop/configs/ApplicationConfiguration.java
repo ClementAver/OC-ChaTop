@@ -26,17 +26,20 @@ public class ApplicationConfiguration {
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non référencé."));
     }
 
+
+    // Encoding algorythm.
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Create the authentication manager...
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // Sets the new strategy to perform the authentication.
+    // ...then sets the new strategy to perform the authentication.
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

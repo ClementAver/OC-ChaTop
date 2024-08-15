@@ -3,6 +3,7 @@ package com.openclassrooms.chatop.controllers;
 import com.openclassrooms.chatop.dtos.RentalRequest;
 import com.openclassrooms.chatop.dtos.RentalResponse;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
+import com.openclassrooms.chatop.exceptions.FormatNotSupportedException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.services.RentalService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class RentalController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/rentals", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public RentalResponse createRental(@Valid @ModelAttribute RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException {
+    public RentalResponse createRental(@Valid @ModelAttribute RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException, FormatNotSupportedException {
         return rentalService.createRental(rentalRequest);
     }
 

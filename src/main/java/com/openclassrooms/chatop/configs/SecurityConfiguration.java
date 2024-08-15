@@ -32,16 +32,23 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Prevent cross-site request forgery.
         http.csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(authorize -> authorize
+                        // No auth needed on :
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/get/image/*").permitAll()
+                        // Auth needed on :
                         .anyRequest().authenticated()
 
                 )
+                // Sets session management to stateless : no session cookie.
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                // Sets the auth provider...
                 .authenticationProvider(authenticationProvider)
+                // ... to filter requests based on our JWT implementation.
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -57,6 +64,7 @@ public class SecurityConfiguration {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
+        // The above is sets for all endpoints.
         source.registerCorsConfiguration("/**",configuration);
 
         return source;

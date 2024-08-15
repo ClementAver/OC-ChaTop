@@ -5,6 +5,7 @@ import com.openclassrooms.chatop.dtos.RentalResponse;
 import com.openclassrooms.chatop.entities.Rental;
 import com.openclassrooms.chatop.entities.User;
 import com.openclassrooms.chatop.exceptions.AlreadyExistException;
+import com.openclassrooms.chatop.exceptions.FormatNotSupportedException;
 import com.openclassrooms.chatop.exceptions.NotFoundException;
 import com.openclassrooms.chatop.mappers.RentalDTOMapper;
 import com.openclassrooms.chatop.repositories.RentalRepository;
@@ -40,7 +41,7 @@ public class RentalService implements RentalInterface {
     }
 
     @Override
-    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException {
+    public RentalResponse createRental(RentalRequest rentalRequest) throws AlreadyExistException, NotFoundException, IOException, FormatNotSupportedException {
         Optional<Rental> rentalInDB = rentalRepository.findByName(rentalRequest.getName());
         if (rentalInDB.isPresent()) {
             throw new AlreadyExistException("Ce nom n'est plus disponible.");
