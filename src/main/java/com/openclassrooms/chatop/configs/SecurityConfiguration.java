@@ -40,7 +40,6 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/get/image/*").permitAll()
                         // Auth needed on :
                         .anyRequest().authenticated()
-
                 )
                 // Sets session management to stateless : no session cookie.
                 .sessionManagement(session -> session

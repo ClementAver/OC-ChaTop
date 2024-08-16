@@ -32,7 +32,6 @@ public class ImageService implements ImageInterface{
             throw new FormatNotSupportedException("Format invalide (acceptés :\".jpeg\", \".jpg\" ou \".png\").");
         }
 
-
         Optional<Image> imageOptional = imageRepository.findByName(imageFileName);
         // If unknown from DB :
         if (imageOptional.isEmpty()) {
